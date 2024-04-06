@@ -1,0 +1,7 @@
+{
+  "extends": "@rpc-like-axios/configuration-typescript/tsconfig.vite",
+  "include": ["src"],
+  "compilerOptions": {
+    "jsx": "react-jsx"
+  }
+}

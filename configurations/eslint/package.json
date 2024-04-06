@@ -1,0 +1,21 @@
+{
+  "name": "@rpc-like-axios/eslint-config",
+  "version": "0.0.0",
+  "license": "MIT",
+  "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^7.1.0",
+    "@typescript-eslint/parser": "^7.1.0",
+    "eslint-config-prettier": "^9.1.0"
+  },
+  "exports": {
+    "./eslintrc": "./.eslintrc.cjs",
+    "./eslintrc.react": "./react.eslintrc.cjs"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "eslint-plugin-react": "^7.34.0",
+    "eslint-plugin-unused-imports": "^3.1.0"
+  }
+}

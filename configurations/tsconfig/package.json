@@ -1,0 +1,13 @@
+{
+  "name": "@rpc-like-axios/configuration-typescript",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "exports": {
+    "./tsconfig.base": "./tsconfig.base.json",
+    "./tsconfig.vite": "./tsconfig.vite.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

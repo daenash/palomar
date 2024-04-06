@@ -1,0 +1,6 @@
+{
+  "extends": "@rpc-like-axios/configuration-typescript/tsconfig.vite",
+  "include": ["."],
+  "compilerOptions": { "jsx": "react-jsx" },
+  "exclude": ["node_modules"]
+}
