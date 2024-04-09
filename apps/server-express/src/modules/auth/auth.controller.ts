@@ -1,4 +1,3 @@
-import { createController } from "../../utils/create-controller.util";
 import {
   authControllerEmailLoginSchemas,
   authControllerGoogleLoginCallbackSchemas,
@@ -8,7 +7,9 @@ import { attachSupabaseMiddleware } from "../../middlewares/attach-supabase.midd
 import { SupabaseService } from "../supabase/supabase.service";
 import { StatusCodes } from "http-status-codes";
 import { AuthService } from "./auth.service";
-import { ControllerFunctions } from "../../types/apify.types";
+
+import { ControllerFunctions, createController } from "@erpc/server";
+import { authenticationMiddleware } from "../../middlewares/authentication.middleware";
 
 const signup = createController(
   { method: "post", path: "/signup" },
@@ -28,8 +29,9 @@ const getSession = createController(
     method: "get",
     path: "/session",
   },
-  { protected: true },
+  { middlewares: [authenticationMiddleware] },
   async (_req, res) => {
+    res.locals.user;
     res.status(200).send({ success: true });
   }
 );

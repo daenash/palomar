@@ -1,13 +1,14 @@
+import { RequestException } from "../exceptions/Request.exception";
 import { InputValidationSchema } from "../types/request-handler.types";
 import { ZodError } from "zod";
-import { BadRequestException } from "../exceptions/bad-request.exception";
+
 import { MiddlewareBuilder } from "../types/middleware.types";
+import { createMiddleware } from "../utils/create-middleware.util";
 
 export type ZodValidateInputMiddleware = MiddlewareBuilder;
 
-export const zodValidateInputMiddleware =
-  (schema: InputValidationSchema): ZodValidateInputMiddleware =>
-  async (req, _res, next) => {
+export const zodValidateInputMiddleware = (schema: InputValidationSchema) =>
+  createMiddleware(async (req, _res, next) => {
     try {
       await schema.parseAsync({
         body: req.body,
@@ -18,8 +19,10 @@ export const zodValidateInputMiddleware =
     } catch (error) {
       if (error instanceof ZodError) {
         console.error(req.originalUrl, error.message);
-        return next(new BadRequestException());
+        return next(
+          new RequestException({ message: "Bad request", status: 400 })
+        );
       }
       return next(error);
     }
-  };
+  });

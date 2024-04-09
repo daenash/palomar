@@ -10,6 +10,7 @@
     "lint": "eslint \"src/**/*.ts\""
   },
   "dependencies": {
+    "@erpc/client": "workspace:*",
     "@rpc-like-axios/ui": "workspace:*",
     "axios": "^1.6.8",
     "react": "^18.2.0",

@@ -1,16 +1,12 @@
 import { createSupabaseClient } from "../utils/create-supabase-client.util";
 import { SupabaseClient } from "@supabase/supabase-js";
-import { MiddlewareBuilder } from "../types/middleware.types";
+import { createMiddleware } from "@erpc/server";
 
-export type AttachSupabaseMiddleware = MiddlewareBuilder<{
+export const attachSupabaseMiddleware = createMiddleware<{
   supabase: SupabaseClient;
-}>;
-
-export const attachSupabaseMiddleware: AttachSupabaseMiddleware = (
-  req,
-  res,
-  next
-) => {
+}>((req, res, next) => {
   res.locals.supabase = createSupabaseClient(req, res);
   next();
-};
+});
+
+export type AttachSupabaseMiddleware = typeof attachSupabaseMiddleware;

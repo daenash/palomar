@@ -1,4 +1,4 @@
-import { createRouter } from "../../utils/create-router.util";
+import { createRouter } from "@erpc/server";
 import { userController } from "./user.controller";
 
 export const userRouter = createRouter("/user", userController);

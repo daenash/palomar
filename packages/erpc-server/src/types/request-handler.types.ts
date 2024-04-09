@@ -1,7 +1,6 @@
 import { RequestHandler } from "express";
 import { AnyZodObject, ZodArray, ZodObject } from "zod";
-import { Middleware } from "./middleware.types";
-import { AuthenticationMiddleware } from "../middlewares/authentication.middleware";
+import { Middleware, MiddlewareBuilder } from "./middleware.types";
 
 export type InputValidationSchema = ZodObject<{
   body?: AnyZodObject;
@@ -39,15 +38,14 @@ type OutputSchemaPart<O extends Options> =
     : unknown;
 
 type ResponseBody<O extends Options> = OutputSchemaPart<O>;
+
 type Params<O extends Options> = InputSchemaPart<O, "params">;
+
 type RequestBody<O extends Options> = InputSchemaPart<O, "body">;
+
 type Query<O extends Options> = InputSchemaPart<O, "query">;
 
-type Locals<O extends Options> = O["middlewares"] extends RequestHandler<
-  unknown,
-  unknown,
-  unknown,
-  unknown,
+type Locals<O extends Options> = O["middlewares"] extends MiddlewareBuilder<
   infer U
 >[]
   ? U
@@ -58,9 +56,7 @@ export type TypedRequestHandler<O extends Options> = RequestHandler<
   ResponseBody<O>,
   RequestBody<O>,
   Query<O>,
-  O["protected"] extends true
-    ? Locals<O> & Parameters<AuthenticationMiddleware>[1]["locals"]
-    : Locals<O>
+  Locals<O>
 >;
 
 export type AsyncRequestHandler<O extends Options> = (

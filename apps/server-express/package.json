@@ -6,6 +6,7 @@
     "dev": "bun --watch src/index.ts"
   },
   "dependencies": {
+    "@erpc/server": "workspace:*",
     "@rpc-like-axios/database": "workspace:*",
     "@supabase/ssr": "^0.1.0",
     "@supabase/supabase-js": "^2.39.8",

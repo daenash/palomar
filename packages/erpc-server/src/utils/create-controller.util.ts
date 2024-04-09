@@ -5,7 +5,6 @@ import {
   TypedRequestHandler,
 } from "../types/request-handler.types";
 import { zodValidateInputMiddleware } from "../middlewares/zod-validate-input.middleware";
-import { authenticationMiddleware } from "../middlewares/authentication.middleware";
 
 type RouteOptions<Path extends string> = {
   method: "get" | "post" | "put" | "delete" | "patch";
@@ -22,9 +21,6 @@ export const createController = <
   controller: AsyncRequestHandler<O>
 ) => {
   const handlers: RequestHandler[] = [];
-  if (options.protected) {
-    handlers.push(authenticationMiddleware as RequestHandler);
-  }
 
   if (options.schemas?.input) {
     handlers.push(zodValidateInputMiddleware(options.schemas.input));

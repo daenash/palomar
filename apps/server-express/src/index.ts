@@ -5,7 +5,7 @@ import { authRouter } from "./modules/auth/auth.router";
 import cookieParser from "cookie-parser";
 import { userRouter } from "./modules/user/user.router";
 import cors from "cors";
-import { Apify, Routers } from "./types/apify.types";
+import { Apify, Routers, attachERPC } from "@erpc/server";
 
 const routers = {
   auth: authRouter,
@@ -19,9 +19,7 @@ const run = async () => {
   app.use(cookieParser());
   app.use(express.json());
 
-  Object.values(routers).forEach((router) => {
-    app.use(router.path, router.router);
-  });
+  attachERPC(app, routers);
 
   app.use(errorHandlingMiddleware);
 

@@ -1,11 +1,12 @@
-import { createController } from "../../utils/create-controller.util";
-import { ControllerFunctions } from "../../types/apify.types";
+import { ControllerFunctions, createController } from "@erpc/server";
+
 import { userControllerGetUserSchemas } from "./user.schemas";
+import { authenticationMiddleware } from "../../middlewares/authentication.middleware";
 
 const getUser = createController(
   { method: "get", path: "/" },
   {
-    protected: true,
+    middlewares: [authenticationMiddleware],
     schemas: userControllerGetUserSchemas,
   },
   (_req, res) => {

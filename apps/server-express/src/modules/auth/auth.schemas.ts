@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { ControllerSchemas } from "../../types/request-handler.types";
+import { ControllerSchemas } from "@erpc/server";
+
 import { selectUserSchema } from "@rpc-like-axios/database/schema";
 
 export const authControllerGoogleLoginCallbackSchemas = {
