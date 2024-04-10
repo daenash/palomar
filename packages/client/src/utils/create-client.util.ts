@@ -32,12 +32,13 @@ export const createApiClient = <Api extends TApi>(
       path: P,
       ...args: CheckArgsArray<[CheckEmpty<FilterPath<FilterUnknown<A>>>]>
     ) => {
+      let replacedPath: string = path;
       const o = (args[0] ?? {}) as A;
 
       // Replace params in path
       if (o.params) {
         Object.entries(o.params).forEach(([key, value]) => {
-          path.replace(key, value);
+          replacedPath = path.replace(`:${key}`, value);
         });
       }
 
@@ -45,7 +46,7 @@ export const createApiClient = <Api extends TApi>(
         method: m,
         data: o.body,
         params: o.query,
-        url: path,
+        url: replacedPath,
       });
     };
 
