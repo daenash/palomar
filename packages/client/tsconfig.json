@@ -1,0 +1,5 @@
+{
+  "extends": "@express-rpc/configuration-typescript/tsconfig.base",
+  "include": ["."],
+  "exclude": ["node_modules"]
+}

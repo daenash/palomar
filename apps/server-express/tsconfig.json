@@ -1,5 +1,0 @@
-{
-  "extends": "@rpc-like-axios/configuration-typescript/tsconfig.base",
-  "include": ["."],
-  "exclude": ["node_modules"]
-}
