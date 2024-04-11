@@ -1,6 +1,6 @@
 import React from "react";
 
-import { api } from "../../api/api";
+import { client } from "../../api/api";
 
 export const HomePage: React.FC = () => {
   return (
@@ -8,19 +8,19 @@ export const HomePage: React.FC = () => {
       <p>Example</p>
       <button
         onClick={async () => {
-          const { data } = await api.get("/demo/", { query: { a: "test" } });
-          alert(data);
+          const { data } = await client.get("/demo/", { query: { a: "test" } });
+          alert(JSON.stringify(data));
         }}
       >
         DemoGet
       </button>
       <button
         onClick={async () => {
-          const { data } = await api.post("/demo/:p", {
+          const { data } = await client.post("/demo/:p", {
             params: { p: "test" },
             body: { a: "body" },
           });
-          alert(data);
+          alert(JSON.stringify(data));
         }}
       >
         DemoPost

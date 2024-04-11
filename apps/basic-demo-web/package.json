@@ -1,5 +1,5 @@
 {
-  "name": "@express-rpc/web-demo",
+  "name": "@express-rpc/basic-demo-web",
   "private": true,
   "version": "0.0.0",
   "type": "module",

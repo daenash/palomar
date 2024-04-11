@@ -1,0 +1,7 @@
+{
+  "extends": "@express-rpc/configuration-typescript/tsconfig.vite",
+  "include": ["src"],
+  "compilerOptions": {
+    "jsx": "react-jsx"
+  }
+}
