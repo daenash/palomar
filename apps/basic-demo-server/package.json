@@ -5,7 +5,7 @@
     "dev": "bun --watch src/index.ts"
   },
   "dependencies": {
-    "@express-rpc/server": "^0.0.1",
+    "@express-rpc/server": "workspace:*",
     "cors": "^2.8.5",
     "express": "^4.18.3",
     "typescript": "latest",

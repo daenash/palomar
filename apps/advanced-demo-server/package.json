@@ -5,7 +5,7 @@
     "dev": "bun --watch src/index.ts"
   },
   "dependencies": {
-    "@express-rpc/server": "^0.0.1",
+    "@express-rpc/server": "workspace:*",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "drizzle-zod": "^0.5.1",
