@@ -11,6 +11,14 @@
   "scripts": {
     "lint": "eslint \"**/*.ts\""
   },
+  "author": {
+    "email": "daenash@gmail.com",
+    "name": "Denes Gutai"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/daenash/express-rpc"
+  },
   "devDependencies": {
     "@express-rpc/eslint-config": "workspace:*",
     "@express-rpc/configuration-typescript": "workspace:*",
