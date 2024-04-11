@@ -1,9 +1,10 @@
 {
   "name": "@express-rpc/express-rpc",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "devDependencies": {
     "@express-rpc/eslint-config": "*",
+    "@types/bun": "^1.0.12",
     "bun-types": "^1.0.31",
     "eslint": "^8.57.0",
     "prettier": "^3.2.5"
