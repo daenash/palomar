@@ -1,6 +1,6 @@
 {
   "name": "@express-rpc/express-rpc",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": true,
   "devDependencies": {
     "@express-rpc/eslint-config": "*",
