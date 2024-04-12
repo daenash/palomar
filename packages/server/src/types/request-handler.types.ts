@@ -30,12 +30,14 @@ type InputSchemaPart<
     : unknown
   : unknown;
 
-type OutputSchemaPart<O extends Options> =
-  O["schemas"] extends ControllerSchemas
-    ? O["schemas"]["output"] extends OutputValidationSchema
-      ? Zod.infer<O["schemas"]["output"]>
-      : unknown
-    : unknown;
+type OutputSchemaPart<
+  O extends Options,
+  Else = unknown,
+> = O["schemas"] extends ControllerSchemas
+  ? O["schemas"]["output"] extends OutputValidationSchema
+    ? Zod.infer<O["schemas"]["output"]>
+    : Else
+  : Else;
 
 type ResponseBody<O extends Options> = OutputSchemaPart<O>;
 
@@ -64,3 +66,8 @@ export type AsyncRequestHandler<O extends Options> = (
 ) =>
   | Promise<ReturnType<TypedRequestHandler<O>>>
   | ReturnType<TypedRequestHandler<O>>;
+
+export type TypedControllerFunction<O extends Options> = (
+  req: Parameters<AsyncRequestHandler<O>>[0],
+  context: Parameters<AsyncRequestHandler<O>>[1]["locals"]
+) => Promise<OutputSchemaPart<O, void>> | OutputSchemaPart<O, void>;

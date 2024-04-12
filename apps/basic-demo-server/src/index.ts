@@ -30,7 +30,7 @@ const erpc = {
       },
 
       // You get a typed RequestHandler here
-      (req, res, _next) => {
+      (_req, _res) => {
         // ------------------------------------------
         // Query is inferred from zod input
         // (property) search?: string | undefined
@@ -38,10 +38,9 @@ const erpc = {
         // console.log(req.query.search);
 
         // ------------------------------------------
-        // Body is inferred from zod output
-        // send(body?: { success: boolean; } | undefined)
+        // Return type is inferred from zod output
         // ------------------------------------------
-        res.send({ success: true });
+        return { success: true };
       }
     ),
   }),

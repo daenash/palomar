@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
 import {
-  AsyncRequestHandler,
   Options,
+  TypedControllerFunction,
   TypedRequestHandler,
 } from "../types/request-handler.types";
 import { zodValidateInputMiddleware } from "../middlewares/zod-validate-input.middleware";
@@ -18,7 +18,7 @@ export const createController = <
 >(
   routeOptions: RO,
   options: O,
-  controller: AsyncRequestHandler<O>
+  controllerFunction: TypedControllerFunction<O>
 ) => {
   const handlers: RequestHandler[] = [];
 
@@ -30,7 +30,8 @@ export const createController = <
 
   const controllerWrapper: TypedRequestHandler<O> = async (req, res, next) => {
     try {
-      await controller(req, res, next);
+      const resp = await controllerFunction(req, res.locals);
+      res.status(200).send(resp);
     } catch (e) {
       console.error(`Error in route ${req.url}:\n`, e);
       next(e);
@@ -39,5 +40,9 @@ export const createController = <
 
   handlers.push(controllerWrapper as RequestHandler);
 
-  return { ...routeOptions, chain: handlers as RequestHandler[], controller };
+  return {
+    ...routeOptions,
+    chain: handlers as RequestHandler[],
+    controller: controllerFunction,
+  };
 };
