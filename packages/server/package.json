@@ -1,6 +1,6 @@
 {
-  "name": "@express-rpc/server",
-  "version": "0.0.3",
+  "name": "@palomar/server",
+  "version": "0.0.1",
   "exports": {
     ".": "./src/index.ts"
   },
@@ -20,8 +20,8 @@
     "url": "https://github.com/daenash/express-rpc"
   },
   "devDependencies": {
-    "@express-rpc/eslint-config": "workspace:*",
-    "@express-rpc/configuration-typescript": "workspace:*",
+    "@palomar/eslint-config": "workspace:*",
+    "@palomar/configuration-typescript": "workspace:*",
     "eslint": "^8.57.0",
     "typescript": "^5.3.3"
   },

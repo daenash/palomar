@@ -1,5 +1,5 @@
 {
-  "extends": "@express-rpc/configuration-typescript/tsconfig.vite",
+  "extends": "@palomar/configuration-typescript/tsconfig.vite",
   "include": ["src"],
   "compilerOptions": {
     "jsx": "react-jsx"

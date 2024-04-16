@@ -1,5 +1,5 @@
 {
-  "name": "@express-rpc/advanced-demo-web",
+  "name": "@palomar/advanced-demo-web",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,7 +10,7 @@
     "lint": "eslint \"src/**/*.ts\""
   },
   "dependencies": {
-    "@express-rpc/client": "workspace:*",
+    "@palomar/client": "workspace:*",
     "axios": "^1.6.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -18,8 +18,8 @@
     "react-router-dom": "^6.22.3"
   },
   "devDependencies": {
-    "@express-rpc/configuration-typescript": "workspace:*",
-    "@express-rpc/eslint-config": "workspace:*",
+    "@palomar/configuration-typescript": "workspace:*",
+    "@palomar/eslint-config": "workspace:*",
     "@types/react": "^18.2.69",
     "@types/react-dom": "^18.2.22",
     "eslint": "^8.57.0",

@@ -1,5 +1,5 @@
 {
-  "name": "@express-rpc/configuration-typescript",
+  "name": "@palomar/configuration-typescript",
   "version": "0.0.0",
   "private": true,
   "license": "MIT",

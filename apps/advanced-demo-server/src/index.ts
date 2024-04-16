@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 
-import { Apify, Routers, attachERPC, createRouter } from "@express-rpc/server";
+import { Apify, Routers, attachERPC, createRouter } from "@palomar/server";
 import { demoController } from "./modules/demo/demo.controller";
 
 const erpc = {

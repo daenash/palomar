@@ -2,7 +2,7 @@
 module.exports = {
     root: true,
     ignorePatterns: [".eslintrc.cjs"],
-    extends: ["@express-rpc/eslint-config/eslintrc"],
+    extends: ["@palomar/eslint-config/eslintrc"],
     parser: "@typescript-eslint/parser",
     parserOptions: {
       project: true,

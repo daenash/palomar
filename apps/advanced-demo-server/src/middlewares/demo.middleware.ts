@@ -1,4 +1,4 @@
-import { createMiddleware } from "@express-rpc/server";
+import { createMiddleware } from "@palomar/server";
 
 export const demoMiddleware = createMiddleware<{
   a: number;

@@ -5,7 +5,7 @@ import {
   demoControllerDemoPostSchemas,
 } from "./demo.schemas";
 
-import { ControllerFunctions, createController } from "@express-rpc/server";
+import { ControllerFunctions, createController } from "@palomar/server";
 import { logRequest } from "../../utils/log-request.util";
 
 const demoGet = createController(

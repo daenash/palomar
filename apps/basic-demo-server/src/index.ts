@@ -7,7 +7,7 @@ import {
   attachERPC,
   createController,
   createRouter,
-} from "@express-rpc/server";
+} from "@palomar/server";
 
 const erpc = {
   // Define routers with the `createRouter` helper

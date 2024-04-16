@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { createApiClient } from "@express-rpc/client";
+import { createApiClient } from "@palomar/client";
 import type { Api } from "../../../basic-demo-server/src/index";
 
 const baseClient = axios.create({ baseURL: "http://localhost:3000" });

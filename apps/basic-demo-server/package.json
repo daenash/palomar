@@ -1,19 +1,19 @@
 {
-  "name": "@express-rpc/basic-demo-server",
+  "name": "@palomar/basic-demo-server",
   "version": "0.0.1",
   "scripts": {
     "dev": "bun --watch src/index.ts"
   },
   "dependencies": {
-    "@express-rpc/server": "workspace:*",
+    "@palomar/server": "workspace:*",
     "cors": "^2.8.5",
     "express": "^4.18.3",
     "typescript": "latest",
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@express-rpc/configuration-typescript": "workspace:*",
-    "@express-rpc/eslint-config": "workspace:*",
+    "@palomar/configuration-typescript": "workspace:*",
+    "@palomar/eslint-config": "workspace:*",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/node": "^20.11.26"

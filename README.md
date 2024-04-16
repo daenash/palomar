@@ -15,7 +15,7 @@ A utility library that makes your `express` backend and `axios` using frontend t
 On the backend side install the following dependencies
 
 ```sh
-bun add express zod @express-rpc/server
+bun add express zod @palomar/server
 ```
 
 Initialize a new express app
@@ -28,7 +28,7 @@ const app = express();
 Create the _erpc_ object by setting up the routers and controllers in it
 
 ```ts
-// import { createRouter, createController } from "@express-rpc/server";
+// import { createRouter, createController } from "@palomar/server";
 // import { z } from "zod";
 
 const erpc = {
@@ -73,7 +73,7 @@ const erpc = {
 Attach the erpc object to the app
 
 ```ts
-// import { attachERPC } from "@express-rpc/server";
+// import { attachERPC } from "@palomar/server";
 attachERPC(app, erpc);
 ```
 
@@ -86,7 +86,7 @@ app.listen(3000);
 Export the types, so the frontend side can use it
 
 ```ts
-// import { Apify } from "@express-rpc/server";
+// import { Apify } from "@palomar/server";
 export type Api = Apify<typeof erpc>;
 ```
 
@@ -99,7 +99,7 @@ You can check the entire basic demo file with additional `cors()` setup [here](.
 On the client side run the followin command to install the required dependencies
 
 ```sh
-bun add axios @express-rpc/client
+bun add axios @palomar/client
 ```
 
 Create an _api_ utility file somewhere in your frontend folder structure (e.g. `src/api/api.ts`)
@@ -109,7 +109,7 @@ In this file, create an axios instance and create the typed API client by passin
 ```ts
 import axios from "axios";
 
-import { createApiClient } from "@express-rpc/client";
+import { createApiClient } from "@palomar/client";
 import type { Api } from "../../../basic-demo-server/src/index";
 
 const baseClient = axios.create({ baseURL: "http://localhost:3000" });

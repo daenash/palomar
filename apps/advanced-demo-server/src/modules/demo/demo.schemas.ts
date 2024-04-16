@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ControllerSchemas } from "@express-rpc/server";
+import { ControllerSchemas } from "@palomar/server";
 
 export const demoControllerDemoGetSchemas = {
   input: z.object({

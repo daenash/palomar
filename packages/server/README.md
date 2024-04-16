@@ -1,4 +1,4 @@
-# @express-rpc/server
+# @palomar/server
 
 ## Check the full documentation here:
 
