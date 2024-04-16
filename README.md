@@ -1,6 +1,8 @@
-# 🔭 Express RPC
+# Palomar 🏔️🔭🌌
 
-A utility library that makes your `express` backend and `axios` using frontend typesafe in an RPC-like way.
+> Let's see what's beyond
+
+A utility library that extracts types from your `express` backend and lets you use it with `axios` as a typesafe API client.
 
 > **_Why not using tRPC?_**
 >
