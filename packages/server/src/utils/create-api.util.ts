@@ -1,7 +1,7 @@
 import { default as express } from "express";
 import { Routers } from "../types/apify.types";
 
-export const attachERPC = <R extends Routers>(
+export const createAPI = <R extends Routers>(
   app: ReturnType<typeof express>,
   routers: R
 ) => {
