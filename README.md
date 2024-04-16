@@ -27,13 +27,13 @@ Initialize a new express app
 const app = express();
 ```
 
-Create the _erpc_ object by setting up the routers and controllers in it
+Create the _routers_ object by setting up the routers and controllers in it
 
 ```ts
 // import { createRouter, createController } from "@palomar/server";
 // import { z } from "zod";
 
-const erpc = {
+const routers = {
   // Define routers with the `createRouter` helper
   demo: createRouter("/demo", {
     // Define controllers with the `createController` helper
@@ -54,7 +54,7 @@ const erpc = {
       },
 
       // You get a typed RequestHandler here
-      (req, res, _next) => {
+      (_req) => {
         // ------------------------------------------
         // Query is inferred from zod input
         // (property) search?: string | undefined
@@ -62,10 +62,9 @@ const erpc = {
         // console.log(req.query.search);
 
         // ------------------------------------------
-        // Body is inferred from zod output
-        // send(body?: { success: boolean; } | undefined)
+        // Return type is inferred from zod output
         // ------------------------------------------
-        res.send({ success: true });
+        return { success: true };
       }
     ),
   }),
@@ -75,8 +74,8 @@ const erpc = {
 Attach the erpc object to the app
 
 ```ts
-// import { attachERPC } from "@palomar/server";
-attachERPC(app, erpc);
+// import { createAPI } from "@palomar/server";
+const api = createAPI(app, routers);
 ```
 
 Start listening on a port
@@ -89,7 +88,7 @@ Export the types, so the frontend side can use it
 
 ```ts
 // import { Apify } from "@palomar/server";
-export type Api = Apify<typeof erpc>;
+export type Api = Apify<typeof api>;
 ```
 
 #### Demo file

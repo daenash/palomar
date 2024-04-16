@@ -4,12 +4,12 @@ import { z } from "zod";
 
 import {
   Apify,
-  attachERPC,
+  createAPI,
   createController,
   createRouter,
 } from "@palomar/server";
 
-const erpc = {
+const routers = {
   // Define routers with the `createRouter` helper
   demo: createRouter("/demo", {
     // Define controllers with the `createController` helper
@@ -30,7 +30,7 @@ const erpc = {
       },
 
       // You get a typed RequestHandler here
-      (req, res, _next) => {
+      (_req) => {
         // ------------------------------------------
         // Query is inferred from zod input
         // (property) search?: string | undefined
@@ -38,19 +38,18 @@ const erpc = {
         // console.log(req.query.search);
 
         // ------------------------------------------
-        // Body is inferred from zod output
-        // send(body?: { success: boolean; } | undefined)
+        // Return type is inferred from zod output
         // ------------------------------------------
-        res.send({ success: true });
+        return { success: true };
       }
     ),
   }),
 };
 
-// Api types can be exported
-export type Api = Apify<typeof erpc>;
-
 const app = express();
 app.use(cors({ origin: "*" }));
-attachERPC(app, erpc);
+const api = createAPI(app, routers);
 app.listen(3000);
+
+// Api types can be exported
+export type Api = Apify<typeof api>;

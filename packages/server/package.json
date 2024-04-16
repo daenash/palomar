@@ -1,6 +1,6 @@
 {
   "name": "@palomar/server",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "exports": {
     ".": "./src/index.ts"
   },
@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/daenash/express-rpc"
+    "url": "https://github.com/daenash/palomar"
   },
   "devDependencies": {
     "@palomar/eslint-config": "workspace:*",

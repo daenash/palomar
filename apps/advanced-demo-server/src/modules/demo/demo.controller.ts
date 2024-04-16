@@ -14,9 +14,9 @@ const demoGet = createController(
     schemas: demoControllerDemoGetSchemas,
     middlewares: [demoMiddleware],
   },
-  async (req, res) => {
+  async (req, context) => {
     logRequest(req as Request);
-    res.status(200).send({ num: res.locals.a });
+    return { num: context.a };
   }
 );
 
@@ -26,15 +26,15 @@ const demoPost = createController(
     schemas: demoControllerDemoPostSchemas,
     middlewares: [demoMiddleware],
   },
-  async (req, res) => {
+  async (req, context) => {
     logRequest(req as Request);
-    res.status(200).send({
+    return {
       str: JSON.stringify({
         paramsP: req.params.p,
         bodyA: req.body.a,
-        middlewareA: res.locals.a,
+        middlewareA: context.a,
       }),
-    });
+    };
   }
 );
 

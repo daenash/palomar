@@ -2,4 +2,4 @@
 
 ## Check the full documentation here:
 
-https://github.com/daenash/express-rpc
+https://github.com/daenash/palomar
