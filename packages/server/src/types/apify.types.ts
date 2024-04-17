@@ -1,4 +1,3 @@
-import { Response } from "express";
 import { createController } from "../utils/create-controller.util";
 import { createRouter } from "../utils/create-router.util";
 
@@ -16,12 +15,8 @@ export type Apify<R extends Routers> = {
 }[keyof R];
 
 type ReqParam<CF extends ControllerFunctions, K extends keyof CF> = Parameters<
-  CF[K]["controller"]
+  CF[K]["_handler"]
 >[0];
-
-type ResParam<CF extends ControllerFunctions, K extends keyof CF> = Parameters<
-  CF[K]["controller"]
->[1];
 
 type FormatController<Prefix extends string, CF extends ControllerFunctions> = {
   [s in keyof CF]: {
@@ -30,6 +25,6 @@ type FormatController<Prefix extends string, CF extends ControllerFunctions> = {
     query: ReqParam<CF, s>["query"];
     params: ReqParam<CF, s>["params"];
     body: ReqParam<CF, s>["body"];
-    response: ResParam<CF, s> extends Response<infer U> ? U : unknown;
+    response: Awaited<ReturnType<CF[s]["_handler"]>>;
   };
 };

@@ -1,6 +1,7 @@
 import { RequestHandler } from "express";
 import { AnyZodObject, ZodArray, ZodObject } from "zod";
-import { Middleware, MiddlewareBuilder } from "./middleware.types";
+import { createMiddleware } from "../utils/create-middleware.util";
+import { UnionToIntersection } from "type-fest";
 
 export type InputValidationSchema = ZodObject<{
   body?: AnyZodObject;
@@ -17,8 +18,7 @@ export type ControllerSchemas = {
 
 export type Options = {
   schemas?: ControllerSchemas;
-  middlewares?: Middleware[];
-  protected?: boolean;
+  middlewares?: ReturnType<typeof createMiddleware>[];
 };
 
 type InputSchemaPart<
@@ -47,10 +47,10 @@ type RequestBody<O extends Options> = InputSchemaPart<O, "body">;
 
 type Query<O extends Options> = InputSchemaPart<O, "query">;
 
-type Locals<O extends Options> = O["middlewares"] extends MiddlewareBuilder<
-  infer U
+type Locals<O extends Options> = O["middlewares"] extends ReturnType<
+  typeof createMiddleware
 >[]
-  ? U
+  ? Awaited<ReturnType<O["middlewares"][number]["_handler"]>>
   : NonNullable<unknown>;
 
 export type TypedRequestHandler<O extends Options> = RequestHandler<
@@ -58,7 +58,7 @@ export type TypedRequestHandler<O extends Options> = RequestHandler<
   ResponseBody<O>,
   RequestBody<O>,
   Query<O>,
-  Locals<O>
+  UnionToIntersection<Locals<O>>
 >;
 
 export type AsyncRequestHandler<O extends Options> = (
@@ -67,7 +67,7 @@ export type AsyncRequestHandler<O extends Options> = (
   | Promise<ReturnType<TypedRequestHandler<O>>>
   | ReturnType<TypedRequestHandler<O>>;
 
-export type TypedControllerFunction<O extends Options> = (
+export type ControllerHandler<O extends Options> = (
   req: Parameters<AsyncRequestHandler<O>>[0],
   context: Parameters<AsyncRequestHandler<O>>[1]["locals"]
 ) => Promise<OutputSchemaPart<O, void>> | OutputSchemaPart<O, void>;

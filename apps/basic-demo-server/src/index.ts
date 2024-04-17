@@ -6,6 +6,7 @@ import {
   Apify,
   createAPI,
   createController,
+  createMiddleware,
   createRouter,
 } from "@palomar/server";
 
@@ -22,25 +23,36 @@ const routers = {
         schemas: {
           input: z.object({
             query: z.object({
-              search: z.string().optional(),
+              num: z.preprocess(Number, z.number()).optional(),
             }),
           }),
-          output: z.object({ success: z.boolean() }),
+          output: z.object({ result: z.number() }),
         },
+        middlewares: [
+          // Access to the request object
+          createMiddleware((_req) => {
+            // ----------------------------------------------------
+            // This will bee accessible in the controller's context
+            return { multiplier: 10 };
+          }),
+        ],
       },
 
       // You get a typed RequestHandler here
-      (_req) => {
+      (req, context) => {
         // ------------------------------------------
         // Query is inferred from zod input
-        // (property) search?: string | undefined
+        // (property) query: { num: number; }
         // ------------------------------------------
-        // console.log(req.query.search);
+        // Context is inferred from middleware
+        // (property) context: { multiplier: number; }
+        // ------------------------------------------
+        const result = (req.query.num ?? 1) * context.multiplier;
 
         // ------------------------------------------
         // Return type is inferred from zod output
         // ------------------------------------------
-        return { success: true };
+        return { result };
       }
     ),
   }),

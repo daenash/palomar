@@ -10,7 +10,7 @@ export const createRouter = <
 ) => {
   const router = Router();
   Object.entries(controller).forEach(([_, c]) => {
-    router[c.method](c.path, c.chain);
+    router[c.method](c.path, c.requestHandlers);
   });
-  return { router, path, controller };
+  return { type: "router" as const, router, path, controller };
 };

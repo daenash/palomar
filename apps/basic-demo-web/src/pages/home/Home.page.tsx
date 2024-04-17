@@ -13,10 +13,10 @@ export const HomePage: React.FC = () => {
             // search query parameter is inferred from API
             //
             // (property) query: {
-            //    search?: string | undefined;
+            //    num: number;
             //  }
             // --------------------------------
-            query: { search: "test" },
+            query: { num: 5 },
           });
           alert(JSON.stringify(data));
         }}

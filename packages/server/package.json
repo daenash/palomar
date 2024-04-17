@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "express": "^4.19.2",
+    "type-fest": "^4.15.0",
     "zod": "^3.22.4"
   }
 }

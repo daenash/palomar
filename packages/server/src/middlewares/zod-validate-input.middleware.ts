@@ -8,21 +8,19 @@ import { createMiddleware } from "../utils/create-middleware.util";
 export type ZodValidateInputMiddleware = MiddlewareBuilder;
 
 export const zodValidateInputMiddleware = (schema: InputValidationSchema) =>
-  createMiddleware(async (req, _res, next) => {
+  createMiddleware(async (req) => {
     try {
-      await schema.parseAsync({
+      const resp = await schema.parseAsync({
         body: req.body,
         query: req.query,
         params: req.params,
       });
-      return next();
+      return resp;
     } catch (error) {
       if (error instanceof ZodError) {
         console.error(req.originalUrl, error.message);
-        return next(
-          new RequestException({ message: "Bad request", status: 400 })
-        );
+        throw new RequestException({ message: "Bad request", status: 400 });
       }
-      return next(error);
+      throw error;
     }
   });
