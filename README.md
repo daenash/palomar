@@ -41,37 +41,46 @@ const routers = {
       // Set path and method
       { path: "/", method: "get" },
 
-      // Set input and output schemas
+      // Set input schemas
       {
-        schemas: {
-          input: z.object({
-            query: z.object({
-              search: z.string().optional(),
-            }),
+        schemas: z.object({
+          query: z.object({
+            num: z.preprocess(Number, z.number()).optional(),
           }),
-          output: z.object({ success: z.boolean() }),
-        },
+        }),
+        middlewares: [
+          // Add middleware handlers
+          // (request object is accessible)
+          createMiddleware((req) => {
+            // ----------------------------------------------------
+            // This will bee accessible in the controller's context
+            return { multiplier: req.path.length };
+          }),
+        ],
       },
 
       // You get a typed RequestHandler here
-      (_req) => {
+      (req, context) => {
         // ------------------------------------------
         // Query is inferred from zod input
-        // (property) search?: string | undefined
+        // (property) query: { num?: number; }
         // ------------------------------------------
-        // console.log(req.query.search);
+        // Context is inferred from middleware
+        // (property) context: { multiplier: number; }
+        // ------------------------------------------
+        const result = (req.query.num ?? 1) * context.multiplier;
 
         // ------------------------------------------
-        // Return type is inferred from zod output
+        // Return will be inferred in the client
         // ------------------------------------------
-        return { success: true };
+        return { result };
       }
     ),
   }),
 };
 ```
 
-Attach the erpc object to the app
+Attach the routers to the app
 
 ```ts
 // import { createAPI } from "@palomar/server";
@@ -125,14 +134,17 @@ In this demo, the `.get` part of the client is available with the `/demo/` path 
 ```ts
 const { data } = await client.get("/demo/", {
   // --------------------------------
-  // search query parameter is inferred from API
-  //
-  // (property) query: {
-  //    search?: string | undefined;
-  //  }
+  // Query parameter is inferred from API
+  // (property) query: { num?: number | undefined }
   // --------------------------------
-  query: { search: "test" },
+  query: { num: 5 },
 });
+
+// --------------------------------
+// Response type is inferred from the API
+// const data: { result: number; }
+// --------------------------------
+console.log(data);
 ```
 
 #### Demo file (React)

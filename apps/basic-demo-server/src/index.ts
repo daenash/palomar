@@ -16,7 +16,7 @@ const routers = {
     // Define controllers with the `createController` helper
     demoGetController: createController(
       // Set path and method
-      { path: "/alma", method: "get" },
+      { path: "/", method: "get" },
 
       // Set input and output schemas
       {
