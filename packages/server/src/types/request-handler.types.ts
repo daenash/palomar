@@ -1,45 +1,33 @@
 import { RequestHandler } from "express";
-import { AnyZodObject, ZodArray, ZodObject } from "zod";
+import { AnyZodObject, ZodObject } from "zod";
 import { createMiddleware } from "../utils/create-middleware.util";
 import { UnionToIntersection } from "type-fest";
 
+// TODO: Somehow gather the path params from path string
+// type ExtractStringParts<T extends string> =
+//   T extends `${infer R}:${infer U}/${infer Q}`
+//     ? ExtractStringParts<R> | U | ExtractStringParts<Q>
+//     : T extends `:${infer U}`
+//       ? U
+//       : never;
+
 export type InputValidationSchema = ZodObject<{
+  params?: AnyZodObject;
   body?: AnyZodObject;
   query?: AnyZodObject;
-  params?: AnyZodObject;
 }>;
 
-export type OutputValidationSchema = AnyZodObject | ZodArray<AnyZodObject>;
-
-export type ControllerSchemas = {
-  input?: InputValidationSchema;
-  output?: OutputValidationSchema;
-};
-
 export type Options = {
-  schemas?: ControllerSchemas;
+  schemas?: InputValidationSchema;
   middlewares?: ReturnType<typeof createMiddleware>[];
 };
 
 type InputSchemaPart<
   O extends Options,
   I extends keyof Zod.infer<InputValidationSchema>,
-> = O["schemas"] extends ControllerSchemas
-  ? O["schemas"]["input"] extends InputValidationSchema
-    ? Zod.infer<O["schemas"]["input"]>[I]
-    : unknown
+> = O["schemas"] extends InputValidationSchema
+  ? Zod.infer<O["schemas"]>[I]
   : unknown;
-
-type OutputSchemaPart<
-  O extends Options,
-  Else = unknown,
-> = O["schemas"] extends ControllerSchemas
-  ? O["schemas"]["output"] extends OutputValidationSchema
-    ? Zod.infer<O["schemas"]["output"]>
-    : Else
-  : Else;
-
-type ResponseBody<O extends Options> = OutputSchemaPart<O>;
 
 type Params<O extends Options> = InputSchemaPart<O, "params">;
 
@@ -55,10 +43,12 @@ type Locals<O extends Options> = O["middlewares"] extends ReturnType<
 
 export type TypedRequestHandler<O extends Options> = RequestHandler<
   Params<O>,
-  ResponseBody<O>,
+  unknown,
   RequestBody<O>,
   Query<O>,
-  UnionToIntersection<Locals<O>>
+  UnionToIntersection<Locals<O>> extends object
+    ? UnionToIntersection<Locals<O>>
+    : never
 >;
 
 export type AsyncRequestHandler<O extends Options> = (
@@ -67,7 +57,8 @@ export type AsyncRequestHandler<O extends Options> = (
   | Promise<ReturnType<TypedRequestHandler<O>>>
   | ReturnType<TypedRequestHandler<O>>;
 
-export type ControllerHandler<O extends Options> = (
+export type ControllerHandler<O extends Options, R extends object | void> = (
   req: Parameters<AsyncRequestHandler<O>>[0],
-  context: Parameters<AsyncRequestHandler<O>>[1]["locals"]
-) => Promise<OutputSchemaPart<O, void>> | OutputSchemaPart<O, void>;
+  context: Parameters<AsyncRequestHandler<O>>[1]["locals"],
+  res: Parameters<AsyncRequestHandler<O>>[1]
+) => Promise<R> | R;

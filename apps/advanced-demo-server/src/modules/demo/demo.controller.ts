@@ -29,11 +29,11 @@ const demoPost = createController(
   async (req, context) => {
     logRequest(req as Request);
     return {
-      str: JSON.stringify({
+      data: {
         paramsP: req.params.p,
         bodyA: req.body.a,
         middlewareA: context.a,
-      }),
+      },
     };
   }
 );

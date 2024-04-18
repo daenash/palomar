@@ -16,24 +16,22 @@ const routers = {
     // Define controllers with the `createController` helper
     demoGetController: createController(
       // Set path and method
-      { path: "/", method: "get" },
+      { path: "/alma", method: "get" },
 
       // Set input and output schemas
       {
-        schemas: {
-          input: z.object({
-            query: z.object({
-              num: z.preprocess(Number, z.number()).optional(),
-            }),
+        schemas: z.object({
+          query: z.object({
+            num: z.preprocess(Number, z.number()).optional(),
           }),
-          output: z.object({ result: z.number() }),
-        },
+        }),
         middlewares: [
-          // Access to the request object
-          createMiddleware((_req) => {
+          // Add middleware handlers one by one while there's
+          // access to the request object in them
+          createMiddleware((req) => {
             // ----------------------------------------------------
             // This will bee accessible in the controller's context
-            return { multiplier: 10 };
+            return { multiplier: req.path.length };
           }),
         ],
       },

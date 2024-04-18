@@ -11,28 +11,13 @@ type RouteOptions<Path extends string> = {
   path: Path;
 };
 
-export const createController = <
-  Path extends string,
-  RO extends RouteOptions<Path>,
-  O extends Options,
->(
-  routeOptions: RO,
-  options: O,
-  handler: ControllerHandler<O>
-) => {
-  const handlers: RequestHandler[] = [];
-
-  if (options.schemas?.input) {
-    handlers.push(
-      zodValidateInputMiddleware(options.schemas.input).requestHandler
-    );
-  }
-
-  handlers.push(...(options.middlewares ?? []).map((m) => m.requestHandler));
-
-  const controllerWrapper: TypedRequestHandler<O> = async (req, res, next) => {
+const wrapControllerHandler =
+  <O extends Options, R extends object | void>(
+    handler: ControllerHandler<O, R>
+  ): TypedRequestHandler<O> =>
+  async (req, res, next) => {
     try {
-      const resp = await handler(req, res.locals);
+      const resp = await handler(req, res.locals, res);
       res.status(200).send(resp);
     } catch (e) {
       console.error(`Error in route ${req.url}:\n`, e);
@@ -40,7 +25,25 @@ export const createController = <
     }
   };
 
-  handlers.push(controllerWrapper as RequestHandler);
+export const createController = <
+  Path extends string,
+  RO extends RouteOptions<Path>,
+  O extends Options,
+  R extends object | void,
+>(
+  routeOptions: RO,
+  options: O,
+  handler: ControllerHandler<O, R>
+) => {
+  const handlers: RequestHandler[] = [];
+
+  if (options.schemas) {
+    handlers.push(zodValidateInputMiddleware(options.schemas).requestHandler);
+  }
+
+  handlers.push(...(options.middlewares ?? []).map((m) => m.requestHandler));
+
+  handlers.push(wrapControllerHandler(handler) as RequestHandler);
 
   return {
     type: "controller" as const,

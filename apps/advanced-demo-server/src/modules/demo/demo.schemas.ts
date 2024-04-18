@@ -1,27 +1,17 @@
 import { z } from "zod";
-import { ControllerSchemas } from "@palomar/server";
+import { InputValidationSchema } from "@palomar/server";
 
-export const demoControllerDemoGetSchemas = {
-  input: z.object({
-    query: z.object({
-      a: z.string(),
-    }),
+export const demoControllerDemoGetSchemas = z.object({
+  query: z.object({
+    a: z.string(),
   }),
-  output: z.object({
-    num: z.number(),
-  }),
-} satisfies ControllerSchemas;
+}) satisfies InputValidationSchema;
 
-export const demoControllerDemoPostSchemas = {
-  input: z.object({
-    body: z.object({
-      a: z.string(),
-    }),
-    params: z.object({
-      p: z.string(),
-    }),
+export const demoControllerDemoPostSchemas = z.object({
+  body: z.object({
+    a: z.string(),
   }),
-  output: z.object({
-    str: z.string(),
+  params: z.object({
+    p: z.string(),
   }),
-} satisfies ControllerSchemas;
+}) satisfies InputValidationSchema;
