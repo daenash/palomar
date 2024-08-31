@@ -76,4 +76,5 @@ await $`git config user.email "github-actions[bot]@users.noreply.github.com"`;
 await $`git add .`;
 await $`git commit -m "Published new version: ${newVersion}"`;
 await $`git tag "v${newVersion}"`;
-await $`git push --tags`;
+await $`git push origin main`;
+await $`git push origin main --tags`;
