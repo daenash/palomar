@@ -34,11 +34,15 @@ jobs:
   publish_to_npm:
     env:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     needs: [lint, format, bump_version]
     name: Publish to NPM
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: git pull origin main
       - uses: oven-sh/setup-bun@v2
       - run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
       - run: (cd packages/server;npm publish)
