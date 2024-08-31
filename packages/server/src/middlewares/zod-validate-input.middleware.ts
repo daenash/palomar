@@ -3,19 +3,19 @@ import { InputValidationSchema } from "../types/request-handler.types";
 import { ZodError } from "zod";
 
 import { MiddlewareBuilder } from "../types/middleware.types";
-import { createMiddleware } from "../utils/create-middleware.util";
+import { _createMiddlewareRoot } from "../utils/create-middleware.util";
 
 export type ZodValidateInputMiddleware = MiddlewareBuilder;
 
 export const zodValidateInputMiddleware = (schema: InputValidationSchema) =>
-  createMiddleware(async (req) => {
+  _createMiddlewareRoot(async (req) => {
     try {
       const resp = await schema.parseAsync({
         body: req.body,
         query: req.query,
         params: req.params,
       });
-      return resp;
+      return { input: resp };
     } catch (error) {
       if (error instanceof ZodError) {
         console.error(req.originalUrl, error.message);

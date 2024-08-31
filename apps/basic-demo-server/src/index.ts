@@ -26,26 +26,26 @@ const routers = {
           }),
         }),
         middlewares: [
-          // Add middleware handlers one by one while there's
-          // access to the request object in them
+          // Add middleware handlers one by one.
+          // It gives access to the request object with the first argument
           createMiddleware((req) => {
             // ----------------------------------------------------
-            // This will bee accessible in the controller's context
+            // The returned data will be accessible in the controller's context
             return { multiplier: req.path.length };
           }),
         ],
       },
 
-      // You get a typed RequestHandler here
-      (req, context) => {
+      // You get function here with typed inputs and middleware data
+      ({ context: { input, middlewares } }) => {
         // ------------------------------------------
-        // Query is inferred from zod input
-        // (property) query: { num: number; }
+        // Query is inferred from context.input
+        // (parameter) input: { query: { num?: number | undefined; } }
         // ------------------------------------------
-        // Context is inferred from middleware
-        // (property) context: { multiplier: number; }
+        // Multiplier is inferred from the middlewares.multiplier
+        // (parameter) middlewares: { multiplier: number; }
         // ------------------------------------------
-        const result = (req.query.num ?? 1) * context.multiplier;
+        const result = (input.query.num ?? 1) * middlewares.multiplier;
 
         // ------------------------------------------
         // Return type is inferred from zod output

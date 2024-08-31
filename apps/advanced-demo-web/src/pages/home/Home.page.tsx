@@ -8,7 +8,13 @@ export const HomePage: React.FC = () => {
       <p>Example</p>
       <button
         onClick={async () => {
-          const { data } = await client.get("/demo/", { query: { a: "test" } });
+          const { data } = await client.get("/demo/", {
+            query: {
+              a: "test",
+              q: ["a", "b", "c"],
+              obj: { type: "a", value: "alma" },
+            },
+          });
           alert(JSON.stringify(data));
         }}
       >

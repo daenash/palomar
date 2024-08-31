@@ -35,20 +35,26 @@ type RequestBody<O extends Options> = InputSchemaPart<O, "body">;
 
 type Query<O extends Options> = InputSchemaPart<O, "query">;
 
-type Locals<O extends Options> = O["middlewares"] extends ReturnType<
-  typeof createMiddleware
->[]
-  ? Awaited<ReturnType<O["middlewares"][number]["_handler"]>>
-  : NonNullable<unknown>;
+type MiddlewaresInLocals<O extends Options> = {
+  middlewares: UnionToIntersection<
+    O["middlewares"] extends ReturnType<typeof createMiddleware>[]
+      ? Exclude<Awaited<ReturnType<O["middlewares"][number]["_handler"]>>, void>
+      : NonNullable<unknown>
+  >;
+};
+
+type Locals<O extends Options> = MiddlewaresInLocals<O> & {
+  input: O["schemas"] extends InputValidationSchema
+    ? Zod.infer<O["schemas"]>
+    : NonNullable<unknown>;
+};
 
 export type TypedRequestHandler<O extends Options> = RequestHandler<
   Params<O>,
   unknown,
   RequestBody<O>,
   Query<O>,
-  UnionToIntersection<Locals<O>> extends object
-    ? UnionToIntersection<Locals<O>>
-    : never
+  Locals<O>
 >;
 
 export type AsyncRequestHandler<O extends Options> = (
@@ -57,8 +63,11 @@ export type AsyncRequestHandler<O extends Options> = (
   | Promise<ReturnType<TypedRequestHandler<O>>>
   | ReturnType<TypedRequestHandler<O>>;
 
-export type ControllerHandler<O extends Options, R extends object | void> = (
-  req: Parameters<AsyncRequestHandler<O>>[0],
-  context: Parameters<AsyncRequestHandler<O>>[1]["locals"],
-  res: Parameters<AsyncRequestHandler<O>>[1]
-) => Promise<R> | R;
+export type ControllerHandler<
+  O extends Options,
+  R extends object | void,
+> = (args: {
+  context: Parameters<AsyncRequestHandler<O>>[1]["locals"];
+  req: Parameters<AsyncRequestHandler<O>>[0];
+  res: Parameters<AsyncRequestHandler<O>>[1];
+}) => Promise<R> | R;

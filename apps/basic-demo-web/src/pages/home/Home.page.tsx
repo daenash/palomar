@@ -20,8 +20,6 @@ export const HomePage: React.FC = () => {
           // Response type is inferred from the API
           // const data: { result: number; }
           // --------------------------------
-          console.log(data);
-
           alert(JSON.stringify(data));
         }}
       >

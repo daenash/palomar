@@ -16,7 +16,7 @@ export type Apify<R extends Routers> = {
 
 type ReqParam<CF extends ControllerFunctions, K extends keyof CF> = Parameters<
   CF[K]["_handler"]
->[0];
+>[0]["req"];
 
 type FormatController<Prefix extends string, CF extends ControllerFunctions> = {
   [s in keyof CF]: {

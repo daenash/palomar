@@ -17,7 +17,7 @@ const wrapControllerHandler =
   ): TypedRequestHandler<O> =>
   async (req, res, next) => {
     try {
-      const resp = await handler(req, res.locals, res);
+      const resp = await handler({ context: res.locals, req, res });
       res.status(200).send(resp);
     } catch (e) {
       console.error(`Error in route ${req.url}:\n`, e);

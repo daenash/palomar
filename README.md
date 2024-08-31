@@ -1,16 +1,38 @@
 # Palomar 🏔️🔭🌌
 
-> Let's see what's beyond
-
 A utility library that extracts types from your `express` backend and lets you use it with `axios` as a typesafe API client.
 
-> **_Why not using tRPC?_**
+> **_Why not tRPC?_**
 >
-> This approach is really similar to tRPC, I might risk saying that it's a far far cousin of the latter.
+> This approach is really similar to tRPC, I might risk saying that it's a bastard son of the latter. tRPC was pretty much the inspiration behind this project.
 >
-> However it keeps the idea of separating routes by path and keeping the basic principles of a classic REST API. So this way we can write a really nice OpenAPI documentation for external usage if we'd like to allow other people to communicate with our server in some way. Moreover, it facilitates the type-safe utilization of the API within our monorepo, sparing us the complexity of generating API clients from OpenAPI documentations or code.
+> However this approach keeps the idea of separating routes by path and keeping the basic principles of a classic REST API, so this way we can write a really nice OpenAPI documentation for external usage if we'd like to allow other people to communicate with our server in some way. Moreover, it facilitates the type-safe utilization of the API within our monorepo, sparing us the complexity of generating client side API code.
 
-## Basic Usage
+---
+
+## Overview
+
+Overview of the features that Palomer offers
+
+#### Validating input parameters
+
+When it comes to validating request information Palomar uses `zod` to check path parameters, query parameters and the request body. Validation is straightforward and if it succeeds, the context of the request will contain the parsed input parameters with their proper type.
+
+#### Typed middlewares
+
+Palomar let's the developer creating and attaching middlewares to requests, and the returned data from those middlewares are accessible in the request's context.
+
+_For example it's pretty easy to authenticate the user using a middleware and accessing that identified user on the request's context without any `d.ts` overwrite for the express request_
+
+#### Client side API types
+
+Palomar generates an API type from the routes defined using it's utility functions. Using this type on client side with Palomar's client utility developers can have a fully typed interface for calling the server.
+
+_Palomar utilize `axios` to create such client, so all other axios related setups can be used with it!_
+
+---
+
+## Basic usage example
 
 ### Server side
 
@@ -41,7 +63,7 @@ const routers = {
       // Set path and method
       { path: "/", method: "get" },
 
-      // Set input schemas
+      // Set input and output schemas
       {
         schemas: z.object({
           query: z.object({
@@ -49,29 +71,29 @@ const routers = {
           }),
         }),
         middlewares: [
-          // Add middleware handlers
-          // (request object is accessible)
+          // Add middleware handlers one by one.
+          // It gives access to the request object with the first argument
           createMiddleware((req) => {
             // ----------------------------------------------------
-            // This will bee accessible in the controller's context
+            // The returned data will be accessible in the controller's context
             return { multiplier: req.path.length };
           }),
         ],
       },
 
-      // You get a typed RequestHandler here
-      (req, context) => {
+      // You get a controller function here with typed inputs and middleware data
+      ({ context: { input, middlewares } }) => {
         // ------------------------------------------
-        // Query is inferred from zod input
-        // (property) query: { num?: number; }
+        // Query is inferred from context.input
+        // (parameter) input: { query: { num?: number | undefined; } }
         // ------------------------------------------
-        // Context is inferred from middleware
-        // (property) context: { multiplier: number; }
+        // Multiplier is inferred from the middlewares.multiplier
+        // (parameter) middlewares: { multiplier: number; }
         // ------------------------------------------
-        const result = (req.query.num ?? 1) * context.multiplier;
+        const result = (input.query.num ?? 1) * middlewares.multiplier;
 
         // ------------------------------------------
-        // Return will be inferred in the client
+        // Return type is inferred from zod output
         // ------------------------------------------
         return { result };
       }
