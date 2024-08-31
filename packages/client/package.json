@@ -12,7 +12,8 @@
   "scripts": {
     "lint:check": "eslint **/*.ts",
     "lint:fix": "eslint --fix **/*.ts",
-    "format:check": "prettier --write ."
+    "format:check": "prettier --check .",
+    "format:fix": "prettier --write ."
   },
   "author": {
     "email": "daenash@gmail.com",
