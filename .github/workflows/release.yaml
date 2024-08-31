@@ -20,12 +20,28 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - run: bun install
       - run: bun run --filter @palomar/server --filter @palomar/client lint:check
-  publish:
+  bump_version:
+    env:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     needs: [lint, format]
-    name: Publish new version
+    name: Bump version
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
       - run: bun install
       - run: bun publish.ts
+  publish_to_npm:
+    env:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+    needs: [lint, format, bump_version]
+    name: Publish to NPM
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+      - run: cd packages/server
+      - run: npm publish
+      - run: cd ../client
+      - run: npm publish

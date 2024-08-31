@@ -75,4 +75,5 @@ await $`git config user.name github-actions-release`;
 await $`git config user.email github-actions-release@github.com`;
 await $`git add .`;
 await $`git commit -m "Published new version: ${newVersion}"`;
-await $`git push`;
+await $`git tag "v${newVersion}"`;
+await $`git push --tags`;
