@@ -6,6 +6,7 @@ import {
   Apify,
   createAPI,
   createController,
+  createMiddleware,
   createRouter,
 } from "@palomar/server";
 
@@ -19,28 +20,37 @@ const routers = {
 
       // Set input and output schemas
       {
-        schemas: {
-          input: z.object({
-            query: z.object({
-              search: z.string().optional(),
-            }),
+        schemas: z.object({
+          query: z.object({
+            num: z.preprocess(Number, z.number()).optional(),
           }),
-          output: z.object({ success: z.boolean() }),
-        },
+        }),
+        middlewares: [
+          // Add middleware handlers one by one.
+          // It gives access to the request object with the first argument
+          createMiddleware((req) => {
+            // ----------------------------------------------------
+            // The returned data will be accessible in the controller's context
+            return { multiplier: req.path.length };
+          }),
+        ],
       },
 
-      // You get a typed RequestHandler here
-      (_req) => {
+      // You get function here with typed inputs and middleware data
+      ({ context: { input, middlewares } }) => {
         // ------------------------------------------
-        // Query is inferred from zod input
-        // (property) search?: string | undefined
+        // Query is inferred from context.input
+        // (parameter) input: { query: { num?: number | undefined; } }
         // ------------------------------------------
-        // console.log(req.query.search);
+        // Multiplier is inferred from the middlewares.multiplier
+        // (parameter) middlewares: { multiplier: number; }
+        // ------------------------------------------
+        const result = (input.query.num ?? 1) * middlewares.multiplier;
 
         // ------------------------------------------
         // Return type is inferred from zod output
         // ------------------------------------------
-        return { success: true };
+        return { result };
       }
     ),
   }),

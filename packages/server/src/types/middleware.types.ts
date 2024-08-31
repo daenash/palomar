@@ -1,4 +1,4 @@
-import { RequestHandler } from "express";
+import { RequestHandler } from 'express';
 
 export type MiddlewareBuilder<
   T extends Record<string, unknown> = Record<string, unknown>,

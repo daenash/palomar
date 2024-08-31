@@ -1,36 +1,23 @@
-import { RequestHandler } from "express";
+import { RequestHandler } from 'express';
 import {
   Options,
-  TypedControllerFunction,
+  ControllerHandler,
   TypedRequestHandler,
-} from "../types/request-handler.types";
-import { zodValidateInputMiddleware } from "../middlewares/zod-validate-input.middleware";
+} from '../types/request-handler.types';
+import { zodValidateInputMiddleware } from '../middlewares/zod-validate-input.middleware';
 
 type RouteOptions<Path extends string> = {
-  method: "get" | "post" | "put" | "delete" | "patch";
+  method: 'get' | 'post' | 'put' | 'delete' | 'patch';
   path: Path;
 };
 
-export const createController = <
-  Path extends string,
-  RO extends RouteOptions<Path>,
-  O extends Options,
->(
-  routeOptions: RO,
-  options: O,
-  controllerFunction: TypedControllerFunction<O>
-) => {
-  const handlers: RequestHandler[] = [];
-
-  if (options.schemas?.input) {
-    handlers.push(zodValidateInputMiddleware(options.schemas.input));
-  }
-
-  handlers.push(...((options.middlewares ?? []) as RequestHandler[]));
-
-  const controllerWrapper: TypedRequestHandler<O> = async (req, res, next) => {
+const wrapControllerHandler =
+  <O extends Options, R extends object | void>(
+    handler: ControllerHandler<O, R>,
+  ): TypedRequestHandler<O> =>
+  async (req, res, next) => {
     try {
-      const resp = await controllerFunction(req, res.locals);
+      const resp = await handler({ context: res.locals, req, res });
       res.status(200).send(resp);
     } catch (e) {
       console.error(`Error in route ${req.url}:\n`, e);
@@ -38,11 +25,30 @@ export const createController = <
     }
   };
 
-  handlers.push(controllerWrapper as RequestHandler);
+export const createController = <
+  Path extends string,
+  RO extends RouteOptions<Path>,
+  O extends Options,
+  R extends object | void,
+>(
+  routeOptions: RO,
+  options: O,
+  handler: ControllerHandler<O, R>,
+) => {
+  const handlers: RequestHandler[] = [];
+
+  if (options.schemas) {
+    handlers.push(zodValidateInputMiddleware(options.schemas).requestHandler);
+  }
+
+  handlers.push(...(options.middlewares ?? []).map((m) => m.requestHandler));
+
+  handlers.push(wrapControllerHandler(handler) as RequestHandler);
 
   return {
+    type: 'controller' as const,
     ...routeOptions,
-    chain: handlers as RequestHandler[],
-    controller: controllerFunction,
+    _handler: handler,
+    requestHandlers: handlers as RequestHandler[],
   };
 };

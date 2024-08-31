@@ -10,7 +10,10 @@
   "private": false,
   "license": "MIT",
   "scripts": {
-    "lint": "eslint \"**/*.ts\""
+    "lint:check": "eslint **/*.ts",
+    "lint:fix": "eslint --fix **/*.ts",
+    "format:check": "prettier --check .",
+    "format:fix": "prettier --write ."
   },
   "author": {
     "email": "daenash@gmail.com",
@@ -21,9 +24,10 @@
     "url": "https://github.com/daenash/palomar"
   },
   "devDependencies": {
-    "@palomar/eslint-config": "workspace:*",
     "@palomar/configuration-typescript": "workspace:*",
+    "@palomar/eslint-config": "workspace:*",
     "eslint": "^8.57.0",
+    "prettier": "^3.3.3",
     "typescript": "^5.3.3"
   },
   "dependencies": {

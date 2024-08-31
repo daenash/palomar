@@ -1,61 +1,57 @@
-import { RequestHandler } from "express";
-import { AnyZodObject, ZodArray, ZodObject } from "zod";
-import { Middleware, MiddlewareBuilder } from "./middleware.types";
+import { RequestHandler } from 'express';
+import { AnyZodObject, ZodObject } from 'zod';
+import { createMiddleware } from '../utils/create-middleware.util';
+import { UnionToIntersection } from 'type-fest';
+
+// TODO: Somehow gather the path params from path string
+// type ExtractStringParts<T extends string> =
+//   T extends `${infer R}:${infer U}/${infer Q}`
+//     ? ExtractStringParts<R> | U | ExtractStringParts<Q>
+//     : T extends `:${infer U}`
+//       ? U
+//       : never;
 
 export type InputValidationSchema = ZodObject<{
+  params?: AnyZodObject;
   body?: AnyZodObject;
   query?: AnyZodObject;
-  params?: AnyZodObject;
 }>;
 
-export type OutputValidationSchema = AnyZodObject | ZodArray<AnyZodObject>;
-
-export type ControllerSchemas = {
-  input?: InputValidationSchema;
-  output?: OutputValidationSchema;
-};
-
 export type Options = {
-  schemas?: ControllerSchemas;
-  middlewares?: Middleware[];
-  protected?: boolean;
+  schemas?: InputValidationSchema;
+  middlewares?: ReturnType<typeof createMiddleware>[];
 };
 
 type InputSchemaPart<
   O extends Options,
   I extends keyof Zod.infer<InputValidationSchema>,
-> = O["schemas"] extends ControllerSchemas
-  ? O["schemas"]["input"] extends InputValidationSchema
-    ? Zod.infer<O["schemas"]["input"]>[I]
-    : unknown
+> = O['schemas'] extends InputValidationSchema
+  ? Zod.infer<O['schemas']>[I]
   : unknown;
 
-type OutputSchemaPart<
-  O extends Options,
-  Else = unknown,
-> = O["schemas"] extends ControllerSchemas
-  ? O["schemas"]["output"] extends OutputValidationSchema
-    ? Zod.infer<O["schemas"]["output"]>
-    : Else
-  : Else;
+type Params<O extends Options> = InputSchemaPart<O, 'params'>;
 
-type ResponseBody<O extends Options> = OutputSchemaPart<O>;
+type RequestBody<O extends Options> = InputSchemaPart<O, 'body'>;
 
-type Params<O extends Options> = InputSchemaPart<O, "params">;
+type Query<O extends Options> = InputSchemaPart<O, 'query'>;
 
-type RequestBody<O extends Options> = InputSchemaPart<O, "body">;
+type MiddlewaresInLocals<O extends Options> = {
+  middlewares: UnionToIntersection<
+    O['middlewares'] extends ReturnType<typeof createMiddleware>[]
+      ? Exclude<Awaited<ReturnType<O['middlewares'][number]['_handler']>>, void>
+      : NonNullable<unknown>
+  >;
+};
 
-type Query<O extends Options> = InputSchemaPart<O, "query">;
-
-type Locals<O extends Options> = O["middlewares"] extends MiddlewareBuilder<
-  infer U
->[]
-  ? U
-  : NonNullable<unknown>;
+type Locals<O extends Options> = MiddlewaresInLocals<O> & {
+  input: O['schemas'] extends InputValidationSchema
+    ? Zod.infer<O['schemas']>
+    : NonNullable<unknown>;
+};
 
 export type TypedRequestHandler<O extends Options> = RequestHandler<
   Params<O>,
-  ResponseBody<O>,
+  unknown,
   RequestBody<O>,
   Query<O>,
   Locals<O>
@@ -67,7 +63,11 @@ export type AsyncRequestHandler<O extends Options> = (
   | Promise<ReturnType<TypedRequestHandler<O>>>
   | ReturnType<TypedRequestHandler<O>>;
 
-export type TypedControllerFunction<O extends Options> = (
-  req: Parameters<AsyncRequestHandler<O>>[0],
-  context: Parameters<AsyncRequestHandler<O>>[1]["locals"]
-) => Promise<OutputSchemaPart<O, void>> | OutputSchemaPart<O, void>;
+export type ControllerHandler<
+  O extends Options,
+  R extends object | void,
+> = (args: {
+  context: Parameters<AsyncRequestHandler<O>>[1]['locals'];
+  req: Parameters<AsyncRequestHandler<O>>[0];
+  res: Parameters<AsyncRequestHandler<O>>[1];
+}) => Promise<R> | R;

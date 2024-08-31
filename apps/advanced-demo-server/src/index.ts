@@ -2,10 +2,10 @@ import express from "express";
 import cors from "cors";
 
 import { Apify, Routers, createRouter, createAPI } from "@palomar/server";
-import { demoController } from "./modules/demo/demo.controller";
+import { demoRouter } from "./modules/demo/demo.router";
 
 const routers = {
-  demo: createRouter("/demo", demoController),
+  demo: createRouter("/demo", demoRouter),
 } satisfies Routers;
 
 const app = express();
