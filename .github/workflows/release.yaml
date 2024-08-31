@@ -22,7 +22,7 @@ jobs:
       - run: bun run --filter @palomar/server --filter @palomar/client lint:check
   bump_version:
     env:
-      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     needs: [lint, format]
     name: Bump version
     runs-on: ubuntu-latest
