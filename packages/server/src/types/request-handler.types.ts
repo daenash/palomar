@@ -1,7 +1,7 @@
-import { RequestHandler } from "express";
-import { AnyZodObject, ZodObject } from "zod";
-import { createMiddleware } from "../utils/create-middleware.util";
-import { UnionToIntersection } from "type-fest";
+import { RequestHandler } from 'express';
+import { AnyZodObject, ZodObject } from 'zod';
+import { createMiddleware } from '../utils/create-middleware.util';
+import { UnionToIntersection } from 'type-fest';
 
 // TODO: Somehow gather the path params from path string
 // type ExtractStringParts<T extends string> =
@@ -25,27 +25,27 @@ export type Options = {
 type InputSchemaPart<
   O extends Options,
   I extends keyof Zod.infer<InputValidationSchema>,
-> = O["schemas"] extends InputValidationSchema
-  ? Zod.infer<O["schemas"]>[I]
+> = O['schemas'] extends InputValidationSchema
+  ? Zod.infer<O['schemas']>[I]
   : unknown;
 
-type Params<O extends Options> = InputSchemaPart<O, "params">;
+type Params<O extends Options> = InputSchemaPart<O, 'params'>;
 
-type RequestBody<O extends Options> = InputSchemaPart<O, "body">;
+type RequestBody<O extends Options> = InputSchemaPart<O, 'body'>;
 
-type Query<O extends Options> = InputSchemaPart<O, "query">;
+type Query<O extends Options> = InputSchemaPart<O, 'query'>;
 
 type MiddlewaresInLocals<O extends Options> = {
   middlewares: UnionToIntersection<
-    O["middlewares"] extends ReturnType<typeof createMiddleware>[]
-      ? Exclude<Awaited<ReturnType<O["middlewares"][number]["_handler"]>>, void>
+    O['middlewares'] extends ReturnType<typeof createMiddleware>[]
+      ? Exclude<Awaited<ReturnType<O['middlewares'][number]['_handler']>>, void>
       : NonNullable<unknown>
   >;
 };
 
 type Locals<O extends Options> = MiddlewaresInLocals<O> & {
-  input: O["schemas"] extends InputValidationSchema
-    ? Zod.infer<O["schemas"]>
+  input: O['schemas'] extends InputValidationSchema
+    ? Zod.infer<O['schemas']>
     : NonNullable<unknown>;
 };
 
@@ -67,7 +67,7 @@ export type ControllerHandler<
   O extends Options,
   R extends object | void,
 > = (args: {
-  context: Parameters<AsyncRequestHandler<O>>[1]["locals"];
+  context: Parameters<AsyncRequestHandler<O>>[1]['locals'];
   req: Parameters<AsyncRequestHandler<O>>[0];
   res: Parameters<AsyncRequestHandler<O>>[1];
 }) => Promise<R> | R;

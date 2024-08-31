@@ -1,8 +1,8 @@
-import { AxiosInstance } from "axios";
+import { AxiosInstance } from 'axios';
 
 export type TApi = {
   path: string;
-  method: "get" | "post" | "patch" | "delete" | "update";
+  method: 'get' | 'post' | 'patch' | 'delete' | 'update';
   query: unknown | object;
   params: unknown | object;
   body: unknown | object;
@@ -14,19 +14,19 @@ type CheckEmpty<T extends Record<string, unknown>> = keyof T extends never
   ? undefined
   : T;
 
-type FilterPath<T> = Omit<T, "path" | "method" | "response">;
+type FilterPath<T> = Omit<T, 'path' | 'method' | 'response'>;
 type FilterUnknown<T> = {
   [K in keyof T as T[K] extends string | number | object ? K : never]: T[K];
 };
 
-const methods = ["get", "post", "patch", "delete", "update"] as const;
+const methods = ['get', 'post', 'patch', 'delete', 'update'] as const;
 
 export const createApiClient = <Api extends TApi>(
-  axiosInstance: AxiosInstance
+  axiosInstance: AxiosInstance,
 ) => {
   const apiCreator = <M extends (typeof methods)[number]>(m: M) => {
     const api = async <
-      P extends Extract<Api, { method: typeof m }>["path"],
+      P extends Extract<Api, { method: typeof m }>['path'],
       A extends Extract<Api, { path: P }>,
     >(
       path: P,
@@ -42,7 +42,7 @@ export const createApiClient = <Api extends TApi>(
         });
       }
 
-      return axiosInstance<A["response"]>({
+      return axiosInstance<A['response']>({
         method: m,
         data: o.body,
         params: o.query,
@@ -59,14 +59,14 @@ export const createApiClient = <Api extends TApi>(
         ? never
         : ReturnType<typeof apiCreator<s>>;
     },
-    Api["method"]
+    Api['method']
   >;
 
   return {
-    get: apiCreator("get"),
-    post: apiCreator("post"),
-    patch: apiCreator("patch"),
-    update: apiCreator("update"),
-    delete: apiCreator("delete"),
+    get: apiCreator('get'),
+    post: apiCreator('post'),
+    patch: apiCreator('patch'),
+    update: apiCreator('update'),
+    delete: apiCreator('delete'),
   } as unknown as FilteredResponse;
 };

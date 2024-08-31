@@ -1,0 +1,31 @@
+name: Publish new version
+
+on:
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: Check linting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install
+      - run: bun run --filter @palomar/server --filter @palomar/client lint:check
+  format:
+    name: Check formatting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install
+      - run: bun run --filter @palomar/server --filter @palomar/client lint:check
+  publish:
+    needs: [lint, format]
+    name: Publish new version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install
+      - run: bun publish.ts

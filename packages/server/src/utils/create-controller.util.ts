@@ -1,19 +1,19 @@
-import { RequestHandler } from "express";
+import { RequestHandler } from 'express';
 import {
   Options,
   ControllerHandler,
   TypedRequestHandler,
-} from "../types/request-handler.types";
-import { zodValidateInputMiddleware } from "../middlewares/zod-validate-input.middleware";
+} from '../types/request-handler.types';
+import { zodValidateInputMiddleware } from '../middlewares/zod-validate-input.middleware';
 
 type RouteOptions<Path extends string> = {
-  method: "get" | "post" | "put" | "delete" | "patch";
+  method: 'get' | 'post' | 'put' | 'delete' | 'patch';
   path: Path;
 };
 
 const wrapControllerHandler =
   <O extends Options, R extends object | void>(
-    handler: ControllerHandler<O, R>
+    handler: ControllerHandler<O, R>,
   ): TypedRequestHandler<O> =>
   async (req, res, next) => {
     try {
@@ -33,7 +33,7 @@ export const createController = <
 >(
   routeOptions: RO,
   options: O,
-  handler: ControllerHandler<O, R>
+  handler: ControllerHandler<O, R>,
 ) => {
   const handlers: RequestHandler[] = [];
 
@@ -46,7 +46,7 @@ export const createController = <
   handlers.push(wrapControllerHandler(handler) as RequestHandler);
 
   return {
-    type: "controller" as const,
+    type: 'controller' as const,
     ...routeOptions,
     _handler: handler,
     requestHandlers: handlers as RequestHandler[],

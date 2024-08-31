@@ -1,7 +1,7 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, Response } from 'express';
 
 type MiddlewareHandler<T extends object | void> = (
-  req: Request
+  req: Request,
 ) => Promise<T> | T;
 
 const wrapMiddlewareHandler =
@@ -9,7 +9,7 @@ const wrapMiddlewareHandler =
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const resp = await handler(req);
-      if (resp && typeof resp === "object") {
+      if (resp && typeof resp === 'object') {
         if (isRoot) {
           res.locals = { ...res.locals, ...resp };
         } else {
@@ -26,17 +26,17 @@ const wrapMiddlewareHandler =
   };
 
 export const createMiddleware = <T extends object | void>(
-  handler: MiddlewareHandler<T>
+  handler: MiddlewareHandler<T>,
 ) => ({
-  type: "middleware" as const,
+  type: 'middleware' as const,
   _handler: handler,
   requestHandler: wrapMiddlewareHandler(handler),
 });
 
 export const _createMiddlewareRoot = <T extends object>(
-  handler: MiddlewareHandler<T>
+  handler: MiddlewareHandler<T>,
 ) => ({
-  type: "middleware" as const,
+  type: 'middleware' as const,
   _handler: handler,
   requestHandler: wrapMiddlewareHandler(handler, true),
 });
